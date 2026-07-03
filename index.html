@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>TimeSync Almaty</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; 
+            background: #e5ddd5;
+            background-image: radial-gradient(#d1cfc8 1px, transparent 1px);
+            background-size: 20px 20px;
+            padding: 10px; /* Меньше отступы для телефона */
+            margin: 0;
+        }
+        .container { 
+            max-width: 800px; 
+            background: white; 
+            padding: 20px; /* Компактнее для телефона */
+            border-radius: 20px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1); 
+            margin: auto; 
+        }
+        
+        /* ГЛАВНОЕ: Адаптивность таблицы */
+        .table-wrapper { 
+            overflow-x: auto; /* Позволяет листать таблицу пальцем вбок */
+            -webkit-overflow-scrolling: touch; 
+        }
+        
+        .calendar-table { width: 100%; border-collapse: collapse; margin: 15px 0; min-width: 500px; }
+        
+        th { padding: 8px; font-size: 12px; }
+        .slot { height: 35px; border: 1px solid #ddd; cursor: pointer; text-align: center; font-size: 14px; }
+        .slot.selected { background: #007aff !important; color: white !important; }
+        
+        button { width: 100%; padding: 15px; background: #007aff; color: white; border: none; border-radius: 12px; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📅 TimeSync Almaty</h1>
+        <input type="text" id="username" placeholder="Имя">
+        <input type="text" id="location" placeholder="Адрес (пр. Аль-Фараби)">
+        
+        <div class="table-wrapper">
+            <table class="calendar-table" id="calendar">
+                <thead>
+                    <tr><th>Время</th><th>Пн</th><th>Вт</th><th>Ср</th><th>Чт</th><th>Пт</th><th>Сб</th><th>Вс</th></tr>
+                </thead>
+                <tbody id="calendar-body"></tbody>
+            </table>
+        </div>
+        
+        <button onclick="sendVote()">Отправить голос</button>
+    </div>
+
+    <script>
+        const body = document.getElementById('calendar-body');
+        const days = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+        
+        for (let h = 8; h <= 23; h++) {
+            let row = body.insertRow();
+            row.insertCell().innerHTML = `<b style="font-size:11px;">${h}:00</b>`;
+            days.forEach(d => {
+                let cell = row.insertCell();
+                cell.className = 'slot';
+                cell.innerText = '🗸';
+                cell.style.color = 'transparent';
+                cell.onclick = () => {
+                    cell.classList.toggle('selected');
+                    cell.style.color = cell.classList.contains('selected') ? 'white' : 'transparent';
+                };
+                cell.setAttribute('data-slot', `${d} ${h}:00`);
+            });
+        }
+        // ... (функция sendVote остается прежней)
+    </script>
+</body>
+</html>
