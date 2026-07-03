@@ -154,22 +154,22 @@
                     return;
                 }
 
-                const maxVotes = data.top_slots[0]?.[1] || 1;
+                const maxVotes = data.top_slots[0]?.count || 1;
 
-                document.getElementById('slots-list').innerHTML = data.top_slots.map(([slot, count]) => `
+                document.getElementById('slots-list').innerHTML = data.top_slots.map(item => `
                     <div class="result-item">
-                        <div class="result-bar" style="width:${Math.round(count/maxVotes*200)}px"></div>
-                        <span class="result-label">${slot}</span>
-                        <span class="result-count">${count} чел.</span>
+                        <div class="result-bar" style="width:${Math.round(item.count/maxVotes*200)}px"></div>
+                        <span class="result-label">${item.slot}</span>
+                        <span class="result-count">${item.count} чел. <span style="color:#555">(${item.names.join(', ')})</span></span>
                     </div>
                 `).join('');
 
-                const maxLoc = data.top_locations[0]?.[1] || 1;
-                document.getElementById('locs-list').innerHTML = data.top_locations.map(([loc, count]) => `
+                const maxLoc = data.top_locations[0]?.count || 1;
+                document.getElementById('locs-list').innerHTML = data.top_locations.map(item => `
                     <div class="result-item">
-                        <div class="result-bar" style="width:${Math.round(count/maxLoc*200)}px; background:#34c759"></div>
-                        <span class="result-label">${loc}</span>
-                        <span class="result-count">${count} чел.</span>
+                        <div class="result-bar" style="width:${Math.round(item.count/maxLoc*200)}px; background:#34c759"></div>
+                        <span class="result-label">${item.location}</span>
+                        <span class="result-count">${item.count} чел. <span style="color:#555">(${item.names.join(', ')})</span></span>
                     </div>
                 `).join('');
 
