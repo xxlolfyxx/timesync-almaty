@@ -74,7 +74,30 @@
                 cell.setAttribute('data-slot', `${d} ${h}:00`);
             });
         }
-        // ... (функция sendVote остается прежней)
+        const API_URL = 'https://timesync-almaty-production.up.railway.app';
+        const MEETING_ID = 'ultimate123';
+
+        async function sendVote() {
+            const name = document.getElementById('username').value.trim();
+            const location = document.getElementById('location').value.trim();
+            if (!name) { alert('Введи имя!'); return; }
+
+            const slots = [...document.querySelectorAll('.slot.selected')]
+                .map(el => el.getAttribute('data-slot'));
+            if (slots.length === 0) { alert('Выбери хотя бы один слот!'); return; }
+
+            try {
+                const res = await fetch(`${API_URL}/api/vote/${MEETING_ID}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, slots, location })
+                });
+                const data = await res.json();
+                alert(data.message || 'Голос отправлен!');
+            } catch (e) {
+                alert('Ошибка соединения с сервером');
+            }
+        }
     </script>
 </body>
 </html>
