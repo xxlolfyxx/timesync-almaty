@@ -49,6 +49,7 @@
 <body>
     <div class="container">
         <h1>📅 TimeSync Almaty</h1>
+        <div id="share-link"></div>
         <input type="text" id="username" placeholder="Имя">
         <input type="text" id="location" placeholder="Адрес (пр. Аль-Фараби)">
         
@@ -93,7 +94,24 @@
             });
         }
         const API_URL = 'https://timesync-almaty-production.up.railway.app';
-        const MEETING_ID = 'ultimate123';
+
+        // Берём ID встречи из URL (?meeting=...) или генерируем новый
+        const params = new URLSearchParams(window.location.search);
+        let MEETING_ID = params.get('meeting');
+        if (!MEETING_ID) {
+            MEETING_ID = Math.random().toString(36).slice(2, 8);
+            params.set('meeting', MEETING_ID);
+            window.history.replaceState({}, '', '?' + params.toString());
+        }
+
+        // Показываем ссылку для шаринга
+        document.getElementById('share-link').innerHTML = `
+            <div style="background:#f0f8ff;border-radius:10px;padding:12px;margin:10px 0;font-size:13px;">
+                <b>Ссылка для твоей группы:</b><br>
+                <span style="color:#007aff;word-break:break-all;">${window.location.href}</span><br>
+                <button onclick="navigator.clipboard.writeText(window.location.href).then(()=>alert('Скопировано!'))" style="margin-top:8px;width:auto;padding:8px 16px;font-size:13px;">📋 Скопировать</button>
+            </div>
+        `;
 
         async function sendVote() {
             const name = document.getElementById('username').value.trim();
