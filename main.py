@@ -46,15 +46,25 @@ async def get_results(meeting_id: str):
     if not votes:
         return {"message": "Голосов пока нет"}
     
-    # Считаем популярность времени
-    all_slots = [slot for v in votes for slot in v["slots"]]
-    slot_counts = Counter(all_slots).most_common(5)
-    
-    # Считаем популярность локаций
-    all_locs = [v["location"] for v in votes if v["location"]]
-    loc_counts = Counter(all_locs).most_common(3)
-    
+    # Считаем популярность времени + имена проголосовавших
+    slot_names = {}
+    for v in votes:
+        for slot in v["slots"]:
+            slot_names.setdefault(slot, []).append(v["name"])
+
+    slot_counts = Counter({s: len(names) for s, names in slot_names.items()}).most_common(5)
+    top_slots = [{"slot": s, "count": c, "names": slot_names[s]} for s, c in slot_counts]
+
+    # Считаем популярность локаций + имена
+    loc_names = {}
+    for v in votes:
+        if v["location"]:
+            loc_names.setdefault(v["location"], []).append(v["name"])
+
+    loc_counts = Counter({l: len(names) for l, names in loc_names.items()}).most_common(3)
+    top_locations = [{"location": l, "count": c, "names": loc_names[l]} for l, c in loc_counts]
+
     return {
-        "top_slots": slot_counts,
-        "top_locations": loc_counts
+        "top_slots": top_slots,
+        "top_locations": top_locations
     }
